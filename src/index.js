@@ -23,7 +23,9 @@ app.use(morgan("dev"));
 app.use(express.static("uploads"));
 
 app.post("/upload", async (req, res) => {
-  console.log(req.files);
+  const today = new Date();
+  const current = String(today.getFullYear())+"-"+String(today.getMonth()+1)+"-"+String(today.getDate());
+  const time = String(today.getHours()) + ":" + String(today.getMinutes()) + ":" + String(today.getSeconds());
   try {
     if (!req.files) {
       res.send({
@@ -32,11 +34,7 @@ app.post("/upload", async (req, res) => {
       });
     } else {
       let f = req.files.uploadFile;
-      f.mv("./uploads/" + f.name);
-      const result = spawn("python", ["../python/ODyolo.py", f.name]);
-      const temp = result.stdout.on("data", (result) => {
-        console.log(result.toSting);
-      });
+
       res.send({
         status: true,
         message: "파일이 업로드 되었습니다.",
@@ -54,6 +52,9 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/upload-multi", async (req, res) => {
+  const today = new Date();
+  const current = String(today.getFullYear())+"-"+String(today.getMonth()+1)+"-"+String(today.getDate());
+  const time = String(today.getHours()) + ":" + String(today.getMinutes()) + ":" + String(today.getSeconds());
   try {
     if (!req.files) {
       res.send({
@@ -66,7 +67,7 @@ app.post("/upload-multi", async (req, res) => {
       _.forEach(_.keysIn(req.files.photos), (key) => {
         let photo = req.files.photos[key];
 
-        photo.mv("./uploads/" + photo.name);
+        photo.mv("./uploads/" + current + "T" + time + "." + key + "." + String(photo.mimetype).substr(6));
 
         data.push({
           name: key,
