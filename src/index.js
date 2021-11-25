@@ -17,7 +17,7 @@ app.use(
 // 미들 웨어 추가
 app.use(cors());
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://118.67.143.47:3000",
   credentials: true,
 };
 app.use(cors(corsOptions));
