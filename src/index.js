@@ -22,6 +22,7 @@ app.use(morgan("dev"));
 app.use(express.static("uploads"));
 
 function convertWebToString(data) {
+  console.log("convertWebToString");
   //가져온 데이터가 Object 형태인데, 왜인지 모르겠지만 eval로 다시 초기화 하지 않으면 버퍼로 데이터를 가지고 있음
   let myJsonString = data.toString();
   myJsonString = eval(myJsonString); // console.log(myJsonString)
@@ -44,6 +45,7 @@ app.post("/upload", async (req, res) => {
     String(today.getMinutes()) +
     ":" +
     String(today.getSeconds());
+  console.log("post");
   try {
     if (!req.files) {
       res.send({
@@ -51,6 +53,7 @@ app.post("/upload", async (req, res) => {
         message: "파일 업로드 실패",
       });
     } else {
+      console.log("else");
       let f = req.files.uploadFile;
       f.mv(
         "./uploads/" +
@@ -65,6 +68,7 @@ app.post("/upload", async (req, res) => {
       const fileName =
         current + "T" + time + "." + "0" + "." + String(f.mimetype).substr(6);
       const result = spawn("python", ["./src/python/ODyolo.py", "" + fileName]);
+      console.log("python out");
       result.stdout.on("data", (result) => {
         res.send(convertWebToString(data));
         res.end();
