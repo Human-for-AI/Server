@@ -2,8 +2,11 @@ import torch
 import sys
 import json
 
+print('0')
+
 
 def ObjectDetection(img):
+    print('1')
     model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     model = torch.load('./yolo.pth')
