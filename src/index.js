@@ -4,8 +4,7 @@ const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const morgan = require("morgan");
 const _ = require("lodash");
-const spawn = require("child_process").spawn;
-const { stdout } = require("process");
+const spawn = require('child_process').spawn;
 const app = express();
 
 // 파일 업로드 허용
@@ -36,7 +35,6 @@ app.post("/upload", async (req, res) => {
     String(today.getMinutes()) +
     ":" +
     String(today.getSeconds());
-  console.log(req.files);
   try {
     if (!req.files) {
       res.send({
@@ -51,13 +49,15 @@ app.post("/upload", async (req, res) => {
           "T" +
           time +
           "." +
-          key +
+          "0" +
           "." +
-          String(photo.mimetype).substr(6)
+          String(f.mimetype).substr(6)
       );
-      const result = spawn("python", ["../python/ODyolo.py", f.name]);
-      const temp = result.stdout.on("data", (result) => {
-        console.log(result.toSting);
+      const fileName = current + "T" + time + "." + "0" + "." + String(f.mimetype).substr(6);
+      const result = spawn('python', ["./src/python/ODyolo.py", ""+fileName]);
+      const temp = result.stdout.on('data', (result) => {
+        console.log("test")
+        console.log(result.toString());
       });
       res.send({
         status: true,
