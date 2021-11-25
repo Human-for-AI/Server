@@ -2,9 +2,10 @@ import torch
 import sys
 import json
 
-torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
 def ObjectDetection(img):
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+
     model = torch.load('./yolo.pth')
     result = model(img)
     df = result.pandas().xyxy[0]
