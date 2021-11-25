@@ -70,6 +70,7 @@ app.post("/upload", async (req, res) => {
       const result = spawn("python", ["./src/python/ODyolo.py", "" + fileName]);
       console.log("python out");
       result.stdout.on("data", (result) => {
+        console.log(data);
         res.send(convertWebToString(data));
         res.end();
       });
