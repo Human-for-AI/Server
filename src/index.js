@@ -4,7 +4,7 @@ const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const morgan = require("morgan");
 const _ = require("lodash");
-const spawn = require('child_process').spawn;
+const spawn = require("child_process").spawn;
 const app = express();
 
 // 파일 업로드 허용
@@ -20,6 +20,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(express.static("uploads"));
+
+function convertWebToString(data) {
+  //가져온 데이터가 Object 형태인데, 왜인지 모르겠지만 eval로 다시 초기화 하지 않으면 버퍼로 데이터를 가지고 있음
+  let myJsonString = data.toString();
+  myJsonString = eval(myJsonString); // console.log(myJsonString)
+  return data; // //eval로 초기화 시 array형태의 데이터 얻을 수 있음.
+  // console.log(myJsonString)
+  //
+}
 
 app.post("/upload", async (req, res) => {
   const today = new Date();
@@ -53,21 +62,12 @@ app.post("/upload", async (req, res) => {
           "." +
           String(f.mimetype).substr(6)
       );
-      const fileName = current + "T" + time + "." + "0" + "." + String(f.mimetype).substr(6);
-      const result = spawn('python', ["./src/python/ODyolo.py", ""+fileName]);
-      const temp = result.stdout.on('data', (result) => {
-        console.log("test")
-        console.log(result.toString());
-      });
-      res.send({
-        status: true,
-        message: "파일이 업로드 되었습니다.",
-        data: {
-          name: f.name,
-          minetype: f.minetype,
-          size: f.size,
-          data: temp,
-        },
+      const fileName =
+        current + "T" + time + "." + "0" + "." + String(f.mimetype).substr(6);
+      const result = spawn("python", ["./src/python/ODyolo.py", "" + fileName]);
+      result.stdout.on("data", (result) => {
+        res.send(convertWebToString(data));
+        res.end();
       });
     }
   } catch (err) {
