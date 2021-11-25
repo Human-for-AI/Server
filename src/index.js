@@ -4,7 +4,8 @@ const fileUpload = require("express-fileupload");
 const cors = require("cors");
 const morgan = require("morgan");
 const _ = require("lodash");
-
+const spawn = require("child_process").spawn;
+const { stdout } = require("process");
 const app = express();
 
 // 파일 업로드 허용
@@ -32,6 +33,10 @@ app.post("/upload", async (req, res) => {
     } else {
       let f = req.files.uploadFile;
       f.mv("./uploads/" + f.name);
+      const result = spawn("python", ["../python/ODyolo.py", f.name]);
+      const temp = result.stdout.on("data", (result) => {
+        console.log(result.toSting);
+      });
       res.send({
         status: true,
         message: "파일이 업로드 되었습니다.",
@@ -39,6 +44,7 @@ app.post("/upload", async (req, res) => {
           name: f.name,
           minetype: f.minetype,
           size: f.size,
+          data: temp,
         },
       });
     }
