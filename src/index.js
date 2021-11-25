@@ -19,8 +19,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(express.static("uploads"));
 
 app.post("/upload", async (req, res) => {
+  console.log(req.files);
   try {
     if (!req.files) {
       res.send({
@@ -61,7 +63,7 @@ app.post("/upload-multi", async (req, res) => {
         photo.mv("./uploads/" + photo.name);
 
         data.push({
-          name: photo.name,
+          name: key,
           minetype: photo.minetype,
           size: photo.size,
         });
